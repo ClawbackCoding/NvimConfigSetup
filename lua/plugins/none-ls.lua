@@ -6,10 +6,10 @@ return {
 
     null_ls.setup({
       sources = {
-        -- Ruff formatter
-        null_ls.builtins.formatting.ruff,
-        -- Ruff linter
-        null_ls.builtins.diagnostics.ruff,
+        -- Example Python tools, adjust to taste
+        null_ls.builtins.formatting.black,
+        null_ls.builtins.formatting.isort,
+        -- null_ls.builtins.diagnostics.mypy,
       },
     })
   end,
