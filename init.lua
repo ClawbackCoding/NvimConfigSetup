@@ -78,3 +78,15 @@ vim.keymap.set("n", "<leader>sq", "<cmd>close<cr>", { desc = "Close split" })
 
 -- optional: equalize split sizes
 vim.keymap.set("n", "<leader>se", "<cmd>wincmd =<cr>", { desc = "Equalize splits" })
+
+-- Rotate splits
+vim.keymap.set("n", "<leader>sr", "<cmd>wincmd r<cr>", { desc = "Rotate splits" })
+
+-- Neotree file explorer
+vim.keymap.set("n", "<C-w>", "<cmd>Neotree focus<cr>", { desc = "Focus file tree" })
+
+-- Move between coding windows with Ctrl-h/j/k/l
+vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Window left" })
+vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Window down" })
+vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Window up" })
+vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Window right" })
