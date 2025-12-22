@@ -82,11 +82,19 @@ vim.keymap.set("n", "<leader>se", "<cmd>wincmd =<cr>", { desc = "Equalize splits
 -- Rotate splits
 vim.keymap.set("n", "<leader>sr", "<cmd>wincmd r<cr>", { desc = "Rotate splits" })
 
--- Neotree file explorer
-vim.keymap.set("n", "<C-w>", "<cmd>Neotree focus<cr>", { desc = "Focus file tree" })
-
--- Move between coding windows with Ctrl-h/j/k/l
+-- move between windows like vim motions
 vim.keymap.set("n", "<C-h>", "<C-w>h", { desc = "Window left" })
 vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Window down" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Window up" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Window right" })
+
+-- toggle between neo-tree and the previous window (editor <-> tree)
+vim.keymap.set("n", "<C-w><C-w>", "<C-w>p", { desc = "Toggle tree/editor" })
+
+-- optional: always focus neo-tree (even if it was not the previous window)
+vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "Focus Neo-tree" })
+
+-- optional: reveal current file in neo-tree
+vim.keymap.set("n", "<leader>r", "<cmd>Neotree reveal<cr>", { desc = "Reveal in Neo-tree" })
+
+
