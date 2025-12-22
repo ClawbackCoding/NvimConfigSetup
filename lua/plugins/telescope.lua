@@ -26,11 +26,9 @@ return {
     end
 
     ----------------------------------------------------------------------
-    -- 2. DYNAMIC SELECTION HIGHLIGHTING (The Fix)
+    -- 2. DYNAMIC SELECTION HIGHLIGHTING
     ----------------------------------------------------------------------
-    -- Define the background shade you want for each theme here
     local theme_overrides = {
-      -- Theme Name      -- The Highlight styles (bg = background color)
       catppuccin = { bg = "#45475a", fg = "#cdd6f4", bold = true },
       gruvbox    = { bg = "#504945", fg = "#ebdbb2", bold = true },
       tokyonight = { bg = "#3b4261", fg = "#c0caf5", bold = true },
@@ -43,24 +41,22 @@ return {
       local override = theme_overrides[current_theme]
 
       if override then
-        -- Apply the custom specific shade for this theme
         vim.api.nvim_set_hl(0, "TelescopeSelection", override)
-        -- Optional: Make the ">" character match the text
-        vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { fg = override.fg, bg = override.bg })
+        vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", {
+          fg = override.fg,
+          bg = override.bg,
+        })
       else
-        -- FALLBACK: If theme is not in table, link to 'Visual' (usually high contrast)
         vim.api.nvim_set_hl(0, "TelescopeSelection", { link = "Visual" })
         vim.api.nvim_set_hl(0, "TelescopeSelectionCaret", { link = "Visual" })
       end
     end
 
-    -- Create an Autocommand to re-apply this every time the theme changes
     vim.api.nvim_create_autocmd("ColorScheme", {
       pattern = "*",
       callback = set_telescope_highlights,
     })
 
-    -- Apply immediately on startup
     set_telescope_highlights()
 
     ----------------------------------------------------------------------
@@ -68,24 +64,37 @@ return {
     ----------------------------------------------------------------------
     telescope.setup({
       defaults = {
-        -- FIX: Map <Tab> to move only (prevents highlighting multiple files)
+        -- Use fd for fast file search, include hidden, ignore .gitignore so .env shows
+        find_command = {
+          "fd",
+          "--type", "f",
+          "--hidden",
+          "--no-ignore",      -- <== this makes .env visible even if in .gitignore
+          "--exclude", ".git",
+          "--exclude", "node_modules",
+          "--exclude", "venv",
+          "--exclude", ".venv",
+          "--exclude", "__pycache__",
+        },
+
         mappings = {
           i = {
-            ["<Tab>"] = actions.move_selection_next,
+            ["<Tab>"]   = actions.move_selection_next,
             ["<S-Tab>"] = actions.move_selection_previous,
           },
           n = {
-            ["<Tab>"] = actions.move_selection_next,
+            ["<Tab>"]   = actions.move_selection_next,
             ["<S-Tab>"] = actions.move_selection_previous,
           },
         },
-        -- Optional: Change the caret to something more visible
-        prompt_prefix = " ",
-        selection_caret = "  ", -- Use 2 spaces if you want a full 'bar' look with the BG color
-        entry_prefix = "  ",
+
+        prompt_prefix   = " ",
+        selection_caret = "  ",
+        entry_prefix    = "  ",
 
         file_ignore_patterns = {
-          "[/\\]%.git[/\\]",
+          "^%.git[/\\]",        -- .git at project root
+          "[/\\]%.git[/\\]",    -- .git in subdirs
           "[/\\]venv[/\\]",
           "[/\\]%.venv[/\\]",
           "[/\\]%%USERPROFILE%%[/\\]",
@@ -100,7 +109,7 @@ return {
           "%.dll",
           "%.wav",
           "%.mp3",
-          "%.mp4"
+          "%.mp4",
         },
       },
       extensions = {
@@ -115,9 +124,7 @@ return {
     ----------------------------------------------------------------------
     -- 4. Keymaps
     ----------------------------------------------------------------------
-    vim.keymap.set("n", "<leader>ff", function()
-      builtin.find_files({ hidden = true, no_ignore = false })
-    end, { desc = "Find files (clean)" })
+    vim.keymap.set("n", "<leader>ff", builtin.find_files, { desc = "Find files (clean)" })
     vim.keymap.set("n", "<leader>fg", builtin.live_grep, { desc = "Live grep" })
     vim.keymap.set("n", "<leader>fd", builtin.lsp_definitions, { desc = "Find definitions" })
     vim.keymap.set("n", "<leader>fr", builtin.lsp_references, { desc = "Find references" })
@@ -137,7 +144,9 @@ return {
           table.insert(list, t)
         end
       end
-      if current then pcall(vim.cmd, "colorscheme " .. current) end
+      if current then
+        pcall(vim.cmd, "colorscheme " .. current)
+      end
       return list
     end
 
@@ -157,7 +166,9 @@ return {
         attach_mappings = function(prompt_bufnr, map)
           local function preview()
             local sel = action_state.get_selected_entry()
-            if sel then pcall(vim.cmd, "colorscheme " .. sel[1]) end
+            if sel then
+              pcall(vim.cmd, "colorscheme " .. sel[1])
+            end
           end
 
           local function wrap_move(fn)
@@ -167,9 +178,9 @@ return {
             end
           end
 
-          map("i", "<Tab>", wrap_move(actions.move_selection_next))
+          map("i", "<Tab>",   wrap_move(actions.move_selection_next))
           map("i", "<S-Tab>", wrap_move(actions.move_selection_previous))
-          map("n", "<Tab>", wrap_move(actions.move_selection_next))
+          map("n", "<Tab>",   wrap_move(actions.move_selection_next))
           map("n", "<S-Tab>", wrap_move(actions.move_selection_previous))
 
           actions.select_default:replace(function()
@@ -184,12 +195,11 @@ return {
           actions.close:enhance({
             post = function()
               if original and vim.g.colors_name ~= original then
-                 -- If we canceled and the theme is wrong, revert
-                 -- Note: checking if specific selection happened is harder here, 
-                 -- so we rely on the user confirming to save.
+                -- keep whatever user saved
               end
             end,
           })
+
           return true
         end,
       }):find()

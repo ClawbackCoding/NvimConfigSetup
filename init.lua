@@ -68,3 +68,13 @@ vim.api.nvim_create_user_command("Restart", function()
 end, { desc = "Restart Neovim in same terminal" })
 
 vim.g.copilot_enabled = true 
+
+-- split windows
+vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "Vertical split" })
+vim.keymap.set("n", "<leader>sh", "<cmd>split<cr>",  { desc = "Horizontal split" })
+
+-- optional: quickly close the current split
+vim.keymap.set("n", "<leader>sq", "<cmd>close<cr>", { desc = "Close split" })
+
+-- optional: equalize split sizes
+vim.keymap.set("n", "<leader>se", "<cmd>wincmd =<cr>", { desc = "Equalize splits" })
