@@ -67,7 +67,7 @@ vim.api.nvim_create_user_command("Restart", function()
   end
 end, { desc = "Restart Neovim in same terminal" })
 
-vim.g.copilot_enabled = true 
+vim.g.copilot_enabled = false
 
 -- split windows
 vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<cr>", { desc = "Vertical split" })
@@ -88,13 +88,5 @@ vim.keymap.set("n", "<C-j>", "<C-w>j", { desc = "Window down" })
 vim.keymap.set("n", "<C-k>", "<C-w>k", { desc = "Window up" })
 vim.keymap.set("n", "<C-l>", "<C-w>l", { desc = "Window right" })
 
--- toggle between neo-tree and the previous window (editor <-> tree)
-vim.keymap.set("n", "<C-w><C-w>", "<C-w>p", { desc = "Toggle tree/editor" })
-
--- optional: always focus neo-tree (even if it was not the previous window)
-vim.keymap.set("n", "<leader>e", "<cmd>Neotree focus<cr>", { desc = "Focus Neo-tree" })
-
--- optional: reveal current file in neo-tree
-vim.keymap.set("n", "<leader>r", "<cmd>Neotree reveal<cr>", { desc = "Reveal in Neo-tree" })
-
-
+require("config.terminal")
+require("config.terminal_keymaps")
